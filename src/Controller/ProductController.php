@@ -16,6 +16,9 @@ class ProductController extends AbstractController
 {
 
 
+
+
+
     /**
      * Display the product list page.
      *
@@ -31,6 +34,8 @@ class ProductController extends AbstractController
             'products' => $productRepository->findAll(),
         ]);
     }
+
+
 
 
 
@@ -81,6 +86,8 @@ class ProductController extends AbstractController
 
 
 
+
+
     /**
      * Edit an existing product.
      *
@@ -121,6 +128,12 @@ class ProductController extends AbstractController
 
 
 
+
+
+
+
+
+
     /**
      * Delete a product.
      *
@@ -144,6 +157,12 @@ class ProductController extends AbstractController
 
 
 
+
+
+
+
+
+
     /**
      * Display a single product.
      *
@@ -159,6 +178,9 @@ class ProductController extends AbstractController
             'product' => $product,
         ]);
     }
+
+
+
 
 
 }

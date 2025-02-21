@@ -69,7 +69,8 @@ class CartController extends AbstractController
      * @return Response
      */
 
-    #[Route('/add/{id}', name: 'cart_add', methods: ['GET'])]
+    // Change from GET to POST for add/remove/clear actions
+    #[Route('/add/{id}', name: 'cart_add', methods: ['POST'])]  // Changed from GET
     public function add(Product $product, SessionInterface $session): Response
     {
         // Récupérer le panier depuis la session
@@ -96,6 +97,11 @@ class CartController extends AbstractController
 
 
 
+
+
+
+
+
     /**
      * Remove a product from the cart.
      *
@@ -103,7 +109,7 @@ class CartController extends AbstractController
      * @param SessionInterface $session
      * @return Response
      */
-    #[Route('/remove/{id}', name: 'cart_remove', methods: ['GET'])]
+    #[Route('/remove/{id}', name: 'cart_remove', methods: ['POST'])]  // Changed from GET
     public function remove(Product $product, SessionInterface $session): Response
     {
         // Récupérer le panier depuis la session
@@ -126,13 +132,20 @@ class CartController extends AbstractController
     }
 
 
+
+
+
+
+
+
+
     /**
      * Clear the cart.
      *
      * @param SessionInterface $session
      * @return Response
      */
-    #[Route('/cart/clear', name: 'cart_clear')]
+    #[Route('/clear', name: 'cart_clear', methods: ['POST'])]  // Changed from GET
     public function clearCart(SessionInterface $session): Response
     {
         // Supprimer le panier de la session
@@ -144,6 +157,8 @@ class CartController extends AbstractController
         // Rediriger vers la page du panier
         return $this->redirectToRoute('cart_index');
     }
+
+
 
 
 }

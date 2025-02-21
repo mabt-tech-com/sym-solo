@@ -33,7 +33,7 @@
                 <td>
                     <a href="{{ path('app_product_show', {'id': product.id}) }}" class="btn btn-info btn-sm">Voir</a>
                     <a href="{{ path('app_product_edit', {'id': product.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
-                    <a href="{{ path('cart_add', {'id': product.id}) }}" class="btn btn-success btn-sm">Ajouter au panier</a>
+                    <a href="{{ path('cart_add', {'id': product.id}) }}" data-method="POST" class="btn btn-success btn-sm">Ajouter au panier</a>
                 </td>
             </tr>
         {% else %}
