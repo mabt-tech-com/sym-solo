@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Reservation Details{% endblock %}
+
+{% block body %}
+    <h1>Reservation Details</h1>
+
+    <p><strong>ID:</strong> {{ reservation.id }}</p>
+    <p><strong>Start Date:</strong> {{ reservation.dateDebut|date('Y-m-d H:i') }}</p>
+    <p><strong>End Date:</strong> {{ reservation.dateFin|date('Y-m-d H:i') }}</p>
+    <p><strong>Status:</strong> {{ reservation.statut }}</p>
+
+    <a href="{{ path('reservation_index') }}">Back to list</a>
+{% endblock %}

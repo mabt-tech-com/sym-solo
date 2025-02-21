@@ -1,0 +1,36 @@
+{# templates/order/show.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de la commande #{{ order.id }}{% endblock %}
+
+{% block body %}
+    <h1>Détails de la commande #{{ order.id }}</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Produit</th>
+                <th>Quantité</th>
+                <th>Prix unitaire</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for orderItem in order.orderItems %}
+            <tr>
+                <td>{{ orderItem.product.name }}</td>
+                <td>{{ orderItem.quantity }}</td>
+                <td>{{ orderItem.Prix}} €</td>
+                <td>{{ orderItem.Prix * orderItem.quantity }} €</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">Aucun produit trouvé pour cette commande.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_order') }}" class="btn btn-primary">Retour à la liste des commandes</a>
+{% endblock %}

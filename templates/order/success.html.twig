@@ -1,0 +1,11 @@
+{# templates/order/success.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Commande réussie{% endblock %}
+
+{% block body %}
+    <h1>Merci pour votre commande !</h1>
+    <p>Votre commande a été passée avec succès.</p>
+    <a href="{{ path('app_product_index') }}" class="btn btn-primary">Retour à la boutique</a>
+{% endblock %}

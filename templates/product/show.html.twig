@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails du Produit{% endblock %}
+
+{% block body %}
+    <h1>Détails du Produit</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ product.id }}</td>
+            </tr>
+            <tr>
+                <th>Nom</th>
+                <td>{{ product.name }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ product.description }}</td>
+            </tr>
+            <tr>
+                <th>Prix</th>
+                <td>{{ product.prix }} €</td>
+            </tr>
+            <tr>
+                <th>Image</th>
+                <td>
+                    {% if product.image %}
+                        <img src="{{ asset('uploads/' ~ product.image) }}" alt="{{ product.name }}" width="200">
+                    {% else %}
+                        Pas d'image
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Magasin</th>
+                <td>{{ product.store.name }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_product_index') }}" class="btn btn-secondary">Retour à la liste</a>
+    <a href="{{ path('app_product_edit', {'id': product.id}) }}" class="btn btn-warning">Modifier</a>
+{% endblock %}

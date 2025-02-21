@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Create New Reservation{% endblock %}
+
+{% block body %}
+    <h1>Create New Reservation</h1>
+
+    {{ form_start(form) }}
+        {{ form_row(form.dateDebut) }}
+        {{ form_row(form.dateFin) }}
+        {{ form_row(form.statut) }}
+        <button type="submit">{{ form_widget(form.submit) }}</button>
+    {{ form_end(form) }}
+
+    <a href="{{ path('reservation_index') }}">Back to list</a>
+{% endblock %}

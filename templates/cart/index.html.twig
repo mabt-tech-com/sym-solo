@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Votre Panier{% endblock %}
+
+{% block body %}
+ {% for message in app.flashes('warning') %}
+        <div class="alert alert-warning">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    <h1>Votre Panier</h1>
+
+   {% if products|length > 0 %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Produit</th>
+                    <th>Prix unitaire</th>
+                    <th>Quantité</th>
+                    <th>Total</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in products %}
+                    <tr>
+                        <td>{{ item.product.name }}</td>
+                        <td>{{ item.product.prix }} €</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ item.product.prix * item.quantity }} €</td>
+                        <td>
+                            <a href="{{ path('cart_remove', {'id': item.product.id}) }}" class="btn btn-danger btn-sm">Supprimer</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3" class="text-end"><strong>Total :</strong></td>
+                    <td><strong>{{ total }} €</strong></td>
+                    <td></td>
+                </tr>
+            </tfoot>
+        </table>
+
+        {# Ajouter les boutons d'actions ici #}
+        <div class="text-center">
+            <a href="{{ path('app_product_index') }}" class="btn btn-primary">Continuer vos achats</a>
+            <a href="{{ path('cart_clear') }}" class="btn btn-danger">Vider le panier</a>
+            <a href="{{ path('app_order_checkout') }}" class="btn btn-success">Passer la commande</a>
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            Votre panier est vide.
+        </div>
+        <div class="text-center">
+            <a href="{{ path('app_product_index') }}" class="btn btn-primary">Découvrir nos produits</a>
+        </div>
+    {% endif %}
+{% endblock %}

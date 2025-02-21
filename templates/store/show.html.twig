@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails du Magasin{% endblock %}
+
+{% block body %}
+<h1>Détails du Magasin</h1>
+
+<p><strong>Nom :</strong> {{ store.name }}</p>
+<p><strong>Description :</strong> 
+    {% if store.description %}
+        {{ store.description }}
+    {% else %}
+        Aucune description disponible.
+    {% endif %}
+</p>
+
+<h2>Produits Associés</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Description</th>
+            <th>Prix</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for product in store.products %}
+            <tr>
+                <td>{{ product.name }}</td>
+                <td>{{ product.description }}</td>
+                <td>{{ product.prix }}</td>
+                <td>
+                    <a href="{{ path('app_product_show', {'id': product.id}) }}" class="btn btn-info btn-sm">Voir</a>
+                    <a href="{{ path('app_product_edit', {'id': product.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">Aucun produit associé à ce magasin.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{{ path('app_store_index') }}" class="btn btn-secondary">Retour à la liste des magasins</a>
+{% endblock %}

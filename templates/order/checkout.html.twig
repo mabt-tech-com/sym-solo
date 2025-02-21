@@ -1,0 +1,30 @@
+{# templates/order/checkout.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Passer la commande{% endblock %}
+
+{% block body %}
+    <h1>Passer la commande</h1>
+
+    {# Afficher les messages flash #}
+    {% for message in app.flashes('warning') %}
+        <div class="alert alert-warning">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    {# Afficher le formulaire de commande #}
+    {{ form_start(form) }}
+        <div class="mb-3">
+            {{ form_label(form.customerName, 'Nom complet') }}
+            {{ form_widget(form.customerName, {'attr': {'class': 'form-control', 'placeholder': 'Entrez votre nom'}}) }}
+        </div>
+        <div class="mb-3">
+            {{ form_label(form.customerEmail, 'Email') }}
+            {{ form_widget(form.customerEmail, {'attr': {'class': 'form-control', 'placeholder': 'Entrez votre email'}}) }}
+        </div>
+
+        <button type="submit" class="btn btn-success">Confirmer la commande</button>
+    {{ form_end(form) }}
+{% endblock %}

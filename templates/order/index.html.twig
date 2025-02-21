@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes Commandes{% endblock %}
+
+{% block body %}
+    <h1>Mes Commandes</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom Client</th>
+                <th>Email Client</th>
+                <th>Date de Création</th>
+                <th>Statut</th>
+                <th>Total</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for order in orders %} {# Utiliser la variable "orders" #}
+            <tr>
+                <td>{{ order.id }}</td>
+                <td>{{ order.customerName }}</td>
+                <td>{{ order.customerEmail }}</td>
+                <td>{{ order.createdAt|date('Y-m-d H:i') }}</td>
+                <td>{{ order.status }}</td>
+                <td>{{ order.total }} €</td>
+                <td>
+                    <a href="{{ path('app_order_show', {id: order.id}) }}">Voir</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">Aucune commande trouvée</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
