@@ -53,7 +53,14 @@ class ProductController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $product = new Product();
-        $form = $this->createForm(ProductType::class, $product);
+        $data = json_decode($request->getContent(), true);
+
+        // Manual data assignment
+        $product->setName($data['name']);
+        $product->setDescription($data['description']);
+        $product->setPrix($data['prix']);
+
+        /*   $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -66,12 +73,12 @@ class ProductController extends AbstractController
                     $newFilename
                 );
                 $product->setImage($newFilename);
-            }
+            }*/
 
-            // Enregistrer le produit
+           // Enregistrer le produit
             $entityManager->persist($product);
             $entityManager->flush();
-
+/*
             $this->addFlash('success', 'Produit créé avec succès !');
             return $this->redirectToRoute('app_product_index');
         }
@@ -80,7 +87,14 @@ class ProductController extends AbstractController
             'product' => $product,
             'form' => $form->createView(),
         ]);
-    }
+    }*/
+
+            return $this->json([
+                'status' => 'success',
+                'id' => $product->getId(),
+                'name' => $product->getName()
+            ], Response::HTTP_CREATED);
+        }
 
 
 
@@ -145,15 +159,25 @@ class ProductController extends AbstractController
     #[Route('/{id}', name: 'app_product_delete', methods: ['POST'])]
     public function delete(Request $request, Product $product, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $product->getId(), $request->request->get('_token'))) {
+        /*
+          // UI CSRF Check (commented)
+         if ($this->isCsrfTokenValid('delete' . $product->getId(), $request->request->get('_token'))) {
+        */
+
             $entityManager->remove($product);
             $entityManager->flush();
 
             $this->addFlash('success', 'Produit supprimé avec succès !');
-        }
+       // }
 
-        return $this->redirectToRoute('app_product_index', [], Response::HTTP_SEE_OTHER);
+        $entityManager->remove($product);
+        $entityManager->flush();
+ /*  return $this->redirectToRoute('app_product_index', [], Response::HTTP_SEE_OTHER);
+  }
+ */
+        return $this->json(['status' => 'success']);
     }
+
 
 
 

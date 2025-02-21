@@ -67,3 +67,13 @@ DATABASE_URL="mysql://root:@127.0.0.1:3306/charging_station"
 ```
 php bin/console about
 ```
+
+
+
+---
+
+#### install symfony/serializer and symfony/validator
+
+```
+composer require symfony/serializer symfony/validator
+```

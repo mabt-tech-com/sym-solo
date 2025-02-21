@@ -87,11 +87,17 @@ class CartController extends AbstractController
         // Mettre à jour le panier dans la session
         $session->set('cart', $cart);
 
-        // Message de succès
+        /* UI Code (commented)
         $this->addFlash('success', 'Le produit a été ajouté au panier avec succès.');
-
-        // Rediriger vers la liste des produits
         return $this->redirectToRoute('app_product_index');
+        */
+
+        // New JSON Response
+        return $this->json([
+            'status' => 'success',
+            'message' => 'Product added to cart',
+            'cart' => $cart
+        ]);
     }
 
 

@@ -70,6 +70,8 @@ final class OrderController extends AbstractController
     #[Route('/checkout', name: 'app_order_checkout')]
     public function checkout(Request $request, SessionInterface $session, EntityManagerInterface $entityManager): Response
     {
+        // $data is for the json data that is sent from the front end.
+        $data = json_decode($request->getContent(), true);
         // Récupérer le panier depuis la session
         $cart = $session->get('cart', []);
 
@@ -123,13 +125,19 @@ final class OrderController extends AbstractController
             return $this->redirectToRoute('app_order_success');
         }
 
-        // Afficher le formulaire de commande
+
+/*        // Afficher le formulaire de commande
         return $this->render('order/checkout.html.twig', [
             'form' => $form->createView(),
         ]);
+    }*/
+
+        return $this->json([
+            'status' => 'success',
+            'order_id' => $order->getId(),
+            'total' => $order->getTotal()
+        ]);
     }
-
-
 
 
     /**
