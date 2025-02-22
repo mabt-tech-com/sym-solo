@@ -9,11 +9,23 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class HomeController extends AbstractController
 {
+
+
+
     #[Route('/', name: 'home')]
     public function index(): Response
     {
-        return $this->render('/index.html.twig', [
+        /* return $this->render('/index.html.twig', [
+            'controller_name' => 'HomeController',
+        ]); */
+
+        return $this->json([
             'controller_name' => 'HomeController',
         ]);
     }
+
+
+
+
+
 }

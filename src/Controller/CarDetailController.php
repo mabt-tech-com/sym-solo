@@ -16,15 +16,17 @@ class CarDetailController extends AbstractController
      *
      * @return Response
      */
-
-
     #[Route('/detail', name: 'car_detail')]
     public function index(): Response
     {
-        return $this->render('detail.html.twig', [
+        /* return $this->render('detail.html.twig', [
             'controller_name' => 'CarDetailController',
+        ]); */
+
+        return $this->json([
+            'controller_name' => 'CarDetailController',
+            'message' => 'Car details page'
         ]);
     }
-
 
 }

@@ -30,12 +30,14 @@ class ProductController extends AbstractController
     #[Route('/', name: 'app_product_index', methods: ['GET'])]
     public function index(ProductRepository $productRepository): Response
     {
-        return $this->render('product/index.html.twig', [
+        /* return $this->render('product/index.html.twig', [
+            'products' => $productRepository->findAll(),
+        ]); */
+
+        return $this->json([
             'products' => $productRepository->findAll(),
         ]);
     }
-
-
 
 
 
@@ -99,9 +101,6 @@ class ProductController extends AbstractController
 
 
 
-
-
-
     /**
      * Edit an existing product.
      *
@@ -113,7 +112,7 @@ class ProductController extends AbstractController
     #[Route('/{id}/edit', name: 'app_product_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Product $product, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(ProductType::class, $product);
+        /* $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -137,9 +136,61 @@ class ProductController extends AbstractController
         return $this->render('product/edit.html.twig', [
             'product' => $product,
             'form' => $form->createView(),
-        ]);
-    }
+        ]); */
 
+        if ($request->isMethod('GET')) {
+            return $this->json([
+                'id' => $product->getId(),
+                'name' => $product->getName(),
+                'prix' => $product->getPrix(),
+                'image' => $product->getImage(),
+            ]);
+        }
+
+        if ($request->isMethod('POST')) {
+            $data = json_decode($request->getContent(), true);
+            $form = $this->createForm(ProductType::class, $product);
+            $form->submit($data);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                // Handle image upload if a new image is provided
+                $imageFile = $form->get('image')->getData();
+                if ($imageFile) {
+                    $newFilename = uniqid() . '.' . $imageFile->guessExtension();
+                    $imageFile->move(
+                        $this->getParameter('uploads_directory'),
+                        $newFilename
+                    );
+                    $product->setImage($newFilename);
+                }
+
+                $entityManager->flush();
+
+                return $this->json([
+                    'status' => 'success',
+                    'message' => 'Product updated successfully!',
+                    'product' => [
+                        'id' => $product->getId(),
+                        'name' => $product->getName(),
+                        'description' => $product->getDescription(),
+                        'prix' => $product->getPrix(),
+                        'image' => $product->getImage(),
+                    ]
+                ], Response::HTTP_OK);
+            }
+
+            return $this->json([
+                'status' => 'error',
+                'message' => 'Invalid form data',
+                'errors' => (string) $form->getErrors(true, false),
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        return $this->json([
+            'status' => 'error',
+            'message' => 'Invalid request method',
+        ], Response::HTTP_METHOD_NOT_ALLOWED);
+    }
 
 
 
@@ -170,8 +221,7 @@ class ProductController extends AbstractController
             $this->addFlash('success', 'Produit supprimé avec succès !');
        // }
 
-        $entityManager->remove($product);
-        $entityManager->flush();
+
  /*  return $this->redirectToRoute('app_product_index', [], Response::HTTP_SEE_OTHER);
   }
  */
@@ -198,12 +248,18 @@ class ProductController extends AbstractController
     #[Route('/{id}', name: 'app_product_show', methods: ['GET'])]
     public function show(Product $product): Response
     {
-        return $this->render('product/show.html.twig', [
+        /* return $this->render('product/show.html.twig', [
             'product' => $product,
+        ]); */
+
+        return $this->json([
+            'id' => $product->getId(),
+            'name' => $product->getName(),
+            'description' => $product->getDescription(),
+            'prix' => $product->getPrix(),
+            'image' => $product->getImage(),
         ]);
     }
-
-
 
 
 

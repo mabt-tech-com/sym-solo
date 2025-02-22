@@ -106,37 +106,37 @@ class CartController extends AbstractController
 
 
 
+/**
+ * Remove a product from the cart.
+ *
+ * @param Product $product
+ * @param SessionInterface $session
+ * @return Response
+ */
+#[Route('/remove/{id}', name: 'cart_remove', methods: ['POST'])]
+public function remove(Product $product, SessionInterface $session): Response
+{
+    // Récupérer le panier depuis la session
+    $cart = $session->get('cart', []);
 
-
-    /**
-     * Remove a product from the cart.
-     *
-     * @param Product $product
-     * @param SessionInterface $session
-     * @return Response
-     */
-    #[Route('/remove/{id}', name: 'cart_remove', methods: ['POST'])]  // Changed from GET
-    public function remove(Product $product, SessionInterface $session): Response
-    {
-        // Récupérer le panier depuis la session
-        $cart = $session->get('cart', []);
-
-        // Supprimer le produit du panier
-        $id = $product->getId();
-        if (isset($cart[$id])) {
-            unset($cart[$id]);
-        }
-
-        // Mettre à jour le panier dans la session
-        $session->set('cart', $cart);
-
-        // Message de succès
-        $this->addFlash('success', 'Le produit a été retiré du panier avec succès.');
-
-        // Rediriger vers le panier
-        return $this->redirectToRoute('cart_index');
+    // Supprimer le produit du panier
+    $id = $product->getId();
+    if (isset($cart[$id])) {
+        unset($cart[$id]);
     }
 
+    // Mettre à jour le panier dans la session
+    $session->set('cart', $cart);
+
+    /* $this->addFlash('success', 'Le produit a été retiré du panier avec succès.');
+    return $this->redirectToRoute('cart_index'); */
+
+    return $this->json([
+        'status' => 'success',
+        'message' => 'Product removed from cart',
+        'cart' => $cart
+    ]);
+}
 
 
 
@@ -151,20 +151,20 @@ class CartController extends AbstractController
      * @param SessionInterface $session
      * @return Response
      */
-    #[Route('/clear', name: 'cart_clear', methods: ['POST'])]  // Changed from GET
+    #[Route('/clear', name: 'cart_clear', methods: ['POST'])]
     public function clearCart(SessionInterface $session): Response
     {
         // Supprimer le panier de la session
         $session->remove('cart');
 
-        // Ajouter un message flash pour informer l'utilisateur
-        $this->addFlash('success', 'Votre panier a été vidé.');
+        /* $this->addFlash('success', 'Votre panier a été vidé.');
+        return $this->redirectToRoute('cart_index'); */
 
-        // Rediriger vers la page du panier
-        return $this->redirectToRoute('cart_index');
+        return $this->json([
+            'status' => 'success',
+            'message' => 'Cart cleared'
+        ]);
     }
-
-
 
 
 }

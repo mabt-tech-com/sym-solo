@@ -26,18 +26,22 @@ final class OrderController extends AbstractController
      *
      * @return Response
      */
-    #[Route('/order', name: 'app_order')]
+    #[Route('/order', name: 'app_order', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): Response
     {
         // Récupérer toutes les commandes depuis la base de données
         $orders = $entityManager->getRepository(Order::class)->findAll();
 
-        // Passer les commandes au template Twig
-        return $this->render('order/index.html.twig', [
-            'orders' => $orders, // Ajouter cette ligne
-        ]);
+        /* return $this->render('order/index.html.twig', [
+            'orders' => $orders,
+        ]); */
 
+        return $this->json([
+            'orders' => $orders,
+        ]);
     }
+
+
 
 
 
@@ -48,14 +52,27 @@ final class OrderController extends AbstractController
      *
      * @return Response
      */
-    #[Route('/order/{id}', name: 'app_order_show')]
+    #[Route('/order/{id}', name: 'app_order_show', methods: ['GET'])]
     public function show(Order $order): Response
     {
-        return $this->render('order/show.html.twig', [
+        /* return $this->render('order/show.html.twig', [
             'order' => $order,
+        ]); */
+
+        return $this->json([
+            'id' => $order->getId(),
+            'status' => $order->getStatus(),
+            'total' => $order->getTotal(),
+            'created_at' => $order->getCreatedAt(),
+            'items' => array_map(function($item) {
+                return [
+                    'product_id' => $item->getProduct()->getId(),
+                    'quantity' => $item->getQuantity(),
+                    'price' => $item->getPrix(),
+                ];
+            }, $order->getOrderItems()->toArray())
         ]);
     }
-
 
 
 
@@ -140,6 +157,11 @@ final class OrderController extends AbstractController
     }
 
 
+
+
+
+
+
     /**
      * Display the order success page.
      *
@@ -147,10 +169,15 @@ final class OrderController extends AbstractController
      *
      * @return Response
      */
-    #[Route('/order/success', name: 'app_order_success')]
+    #[Route('/order/success', name: 'app_order_success', methods: ['GET'])]
     public function orderSuccess(): Response
     {
-        return $this->render('order/success.html.twig');
+        /* return $this->render('order/success.html.twig'); */
+
+        return $this->json([
+            'status' => 'success',
+            'message' => 'Order completed successfully!'
+        ]);
     }
 
 }

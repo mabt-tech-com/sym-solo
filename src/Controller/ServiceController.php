@@ -11,12 +11,16 @@ class ServiceController extends AbstractController
 {
 
 
-
     #[Route('/service', name: 'service')]
     public function index(): Response
     {
-        return $this->render('service.html.twig', [
+        /* return $this->render('service.html.twig', [
             'controller_name' => 'ServiceController',
+        ]); */
+
+        return $this->json([
+            'controller_name' => 'ServiceController',
+            'message' => 'Service page',
         ]);
     }
 
