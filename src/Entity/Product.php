@@ -32,9 +32,10 @@ class Product
     #[ORM\JoinColumn(nullable: false)]
     private ?Store $store = null;
 
+    #[ORM\Column(type: Types::INTEGER)]
+    private int $product_points = 0;
+
     /**
-     * @var Collection<int, Cart>
-     */
     #[ORM\ManyToMany(targetEntity: Cart::class, mappedBy: 'products')]
     private Collection $carts;
 
@@ -43,10 +44,6 @@ class Product
      */
     #[ORM\OneToMany(targetEntity: OrderItem::class, mappedBy: 'product')]
     private Collection $orderItems;
-
-
-   
-    
 
     public function __construct()
     {
@@ -119,6 +116,17 @@ class Product
         return $this;
     }
 
+    public function getProductPoints(): int
+    {
+        return $this->product_points;
+    }
+
+    public function setProductPoints(int $points): static
+    {
+        $this->product_points = $points;
+        return $this;
+    }
+
     /**
      * @return Collection<int, Cart>
      */
@@ -175,10 +183,4 @@ class Product
 
         return $this;
     }
-
-    
-    
-   
-    
-
 }

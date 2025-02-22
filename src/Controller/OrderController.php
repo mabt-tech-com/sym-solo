@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 
+use App\Entity\LoyaltySettings;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -76,6 +77,8 @@ final class OrderController extends AbstractController
 
 
 
+
+
     /**
     * Handle the checkout process.
     *
@@ -87,6 +90,9 @@ final class OrderController extends AbstractController
     #[Route('/checkout', name: 'app_order_checkout')]
     public function checkout(Request $request, SessionInterface $session, EntityManagerInterface $entityManager): Response
     {
+        // Get the authenticated user
+        $user = $this->getUser();
+
         // $data is for the json data that is sent from the front end.
         $data = json_decode($request->getContent(), true);
         // Récupérer le panier depuis la session
@@ -103,61 +109,73 @@ final class OrderController extends AbstractController
         $form = $this->createForm(OrderType::class, $order);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $total = 0;
+        // Calculate total and points
+        $total = 0;
+        $pointsEarned = 0;
 
-            // Ajouter chaque produit du panier à la commande
-            foreach ($cart as $productId => $quantity) {
-                $product = $entityManager->getRepository(Product::class)->find($productId);
-                if (!$product) {
-                    continue;
-                }
-
-                // Créer un nouvel OrderItem
-                $orderItem = new OrderItem();
-                $orderItem->setOrderReference($order);
-                $orderItem->setProduct($product);
-                $orderItem->setQuantity($quantity);
-                $orderItem->setPrix($product->getPrix());
-
-                // Persister l'OrderItem
-                $entityManager->persist($orderItem);
-                $total += $product->getPrix() * $quantity;
+        // Ajouter chaque produit du panier à la commande
+        foreach ($cart as $productId => $quantity) {
+            $product = $entityManager->getRepository(Product::class)->find($productId);
+            if (!$product) {
+                continue;
             }
 
-            // Définir les propriétés de la commande
-            $order->setTotal($total);
-            $order->setStatus('pending');
-            $order->setCreatedAt(new \DateTimeImmutable());
+            // Calculate points earned for this product
+            $pointsEarned += $product->getProductPoints() * $quantity;
 
-            // Persister la commande
-            $entityManager->persist($order);
-            $entityManager->flush();
+            // Créer un nouvel OrderItem
+            $orderItem = new OrderItem();
+            $orderItem->setOrderReference($order);
+            $orderItem->setProduct($product);
+            $orderItem->setQuantity($quantity);
+            $orderItem->setPrix($product->getPrix());
 
-            // Vider le panier après la commande
-            $session->remove('cart');
-
-            // Rediriger vers une page de succès
-            $this->addFlash('success', 'Votre commande a été passée avec succès.');
-            return $this->redirectToRoute('app_order_success');
+            // Persister l'OrderItem
+            $entityManager->persist($orderItem);
+            $total += $product->getPrix() * $quantity;
         }
 
+        // Handle points redemption if requested
+        if (isset($data['use_points'])) {
+            $loyaltySettings = $entityManager->getRepository(LoyaltySettings::class)->find(1);
+            $maxPoints = min($user->getLoyaltyPoints(), $data['use_points']);
+            $discount = $loyaltySettings->convertPointsToMoney($maxPoints);
 
-/*        // Afficher le formulaire de commande
+            $order->setUsedLoyaltyPoints($maxPoints);
+            $total = max(0, $total - $discount);
+            $user->redeemPoints($maxPoints);
+        }
+
+        // Add earned points to user
+        $user->addLoyaltyPoints($pointsEarned);
+
+        // Définir les propriétés de la commande
+        $order->setTotal($total);
+        $order->setStatus('pending');
+        $order->setCreatedAt(new \DateTimeImmutable());
+
+        // Persister la commande
+        $entityManager->persist($order);
+        $entityManager->flush();
+
+        // Vider le panier après la commande
+        $session->remove('cart');
+
+        /*
+        // Afficher le formulaire de commande
         return $this->render('order/checkout.html.twig', [
             'form' => $form->createView(),
         ]);
-    }*/
+        */
 
         return $this->json([
             'status' => 'success',
             'order_id' => $order->getId(),
-            'total' => $order->getTotal()
+            'total' => $order->getTotal(),
+            'points_earned' => $pointsEarned,
+            'points_remaining' => $user->getLoyaltyPoints()
         ]);
     }
-
-
-
 
 
 
