@@ -77,3 +77,81 @@ php bin/console about
 ```
 composer require symfony/serializer symfony/validator
 ```
+
+<br/>
+<br/>
+<br/>
+
+---
+
+<br/>
+<br/>
+<br/>
+
+# Loyaltiy points testing : 
+
+
+To use this system:
+
+### Create Products with points values:
+
+
+```
+POST /product/new
+
+{
+"name": "Premium Widget",
+"product_points": 100,
+"prix": 49.99
+}
+```
+
+### Purchase (earn points):
+
+
+```
+POST /checkout
+
+
+{
+"use_points": 0
+}
+```
+
+### Redeem points next purchase:
+
+```
+POST /checkout
+
+
+{
+"use_points": 500
+}
+```
+
+### Admin grant points:
+
+```
+POST /admin/grant-points
+
+
+{
+"user_id": 123,
+"points": 1000
+}
+```
+
+### Migration Steps:
+Run `symfony console make:migration` to generate migrations for new fields
+
+Update your Postman collection with new endpoints
+
+### Create initial LoyaltySettings entry:
+
+```
+INSERT INTO loyalty_settings (id, points_to_money_ratio) VALUES (1, 0.1);
+```
+ 
+
+
+---
