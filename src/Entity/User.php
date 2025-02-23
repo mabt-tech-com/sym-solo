@@ -18,10 +18,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $email = null;
 
     #[ORM\Column(type: 'json')]
-    private array $roles = [];
-
-    #[ORM\Column(type: 'integer')]
-    #[ORM\Column(type: 'string')]
     private ?string $password = null;
 
     public function getId(): ?int
@@ -65,6 +61,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->password = $password;
         return $this;
     }
+
 
     public function getSalt(): ?string
     {
