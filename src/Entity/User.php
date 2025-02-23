@@ -2,11 +2,14 @@
 
 namespace App\Entity;
 
+use AllowDynamicProperties;
+use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ORM\Table(name: '`user`')] // Explicit table name definition
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -14,11 +17,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
+    ////
+
     #[ORM\Column(type: 'string', length: 180, unique: true)]
-    private ?string $email = null;
+    private string $email;
 
     #[ORM\Column(type: 'json')]
-    private ?string $password = null;
+    private array $roles = [];
+
+    #[ORM\Column(type: 'string')]
+    private string $password;
+
+    #[ORM\Column(type: 'integer')]
+    private int $loyalty_points = 0;
+
+
 
     public function getId(): ?int
     {
@@ -94,5 +107,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getUserIdentifier(): string
     {
         return $this->email;
+    }
+
+
+    public function setLoyaltyPoints(int $points): self
+    {
+        $this->loyalty_points = $points;
+        return $this;
     }
 }
